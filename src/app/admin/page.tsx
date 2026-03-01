@@ -64,6 +64,7 @@ const AdminDashboard = () => {
   const [chartData, setChartData] = useState<any[]>([]);
   const [serviceData, setServiceData] = useState<any[]>([]);
   const [dailyData, setDailyData] = useState<any[]>([]);
+  const [showAllBookings, setShowAllBookings] = useState(false);
 
   // Check if user is already authenticated on component mount
   useEffect(() => {
@@ -513,39 +514,266 @@ const AdminDashboard = () => {
           </div>
         </div>
 
-        {/* Bookings Table */}
+        {/* Bookings Table - Card layout for mobile, table for larger screens */}
         <div className="bg-white rounded-xl shadow-lg overflow-hidden mb-6 sm:mb-8 border border-gray-100">
-          <div className="overflow-x-auto">
+          {/* Mobile Card View - Visible only on small screens */}
+          <div className="block md:hidden">
+            {filteredBookings.length > 0 ? (
+              <>
+                {filteredBookings.slice(0, 4).map((booking, index) => (
+                  <div key={booking.id || `booking-${index}`} className="border-b border-gray-100 last:border-b-0 p-3 hover:bg-gray-50 transition-colors duration-150">
+                    <div className="flex justify-between items-start">
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center justify-between">
+                          <div className="font-mono bg-gray-100 px-2 py-1 rounded text-xs mb-1">
+                            {booking.id?.substring(0, 6) || `BK${index}`}
+                          </div>
+                          <span
+                            onClick={() => cycleBookingStatus(booking.id, booking.status)}
+                            className={`cursor-pointer text-[9px] font-semibold rounded-full px-2 py-1 border whitespace-nowrap transition-all duration-200 hover:scale-105 ${
+                              (booking.status || '').toLowerCase() === 'pending'
+                                ? 'bg-yellow-50 text-yellow-800 border-yellow-300 hover:bg-yellow-100'
+                                : (booking.status || '').toLowerCase() === 'confirmed'
+                                  ? 'bg-blue-50 text-blue-800 border-blue-300 hover:bg-blue-100'
+                                  : (booking.status || '').toLowerCase() === 'completed'
+                                    ? 'bg-green-50 text-green-800 border-green-300 hover:bg-green-100'
+                                    : (booking.status || '').toLowerCase() === 'cancelled'
+                                      ? 'bg-red-50 text-red-800 border-red-300 hover:bg-red-100'
+                                      : 'bg-gray-50 text-gray-800 border-gray-300 hover:bg-gray-100'
+                            }`}
+                          >
+                            {booking.status || 'Pending'}
+                          </span>
+                        </div>
+                        
+                        <div className="text-sm font-medium text-gray-900 truncate mb-1">
+                          {booking.name || 'N/A'}
+                        </div>
+                        
+                        <div className="text-xs text-gray-500 mb-1 flex items-center">
+                          <svg className="w-3 h-3 text-gray-400 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                          </svg>
+                          {booking.phone || 'N/A'}
+                        </div>
+                        
+                        <div className="text-xs text-gray-500 mb-1 flex items-center">
+                          <svg className="w-3 h-3 text-gray-400 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                          </svg>
+                          {booking.email || 'N/A'}
+                        </div>
+                        
+                        <div className="text-xs text-gray-500 mb-1 flex items-center">
+                          <svg className="w-3 h-3 text-gray-400 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                          </svg>
+                          <div className="truncate">{booking.address || 'N/A'}</div>
+                        </div>
+                        
+                        <div className="text-xs text-gray-500 mb-1 flex items-center">
+                          <svg className="w-3 h-3 text-gray-400 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                          </svg>
+                          <div>{formatDate(booking.date)} {formatTime(booking.time)}</div>
+                        </div>
+                        
+                        <div className="text-xs text-gray-500 mb-1">
+                          <strong>Service:</strong> {booking.service || 'N/A'}
+                        </div>
+                        
+                        <div className="text-xs text-gray-500 mb-2">
+                          <strong>Notes:</strong> {booking.notes || 'N/A'}
+                        </div>
+                      </div>
+                      
+                      <div className="flex flex-col gap-1 ml-2">
+                        <button
+                          onClick={() => copyBookingData(booking)}
+                          className="inline-flex items-center px-2 py-1 border border-transparent text-[10px] leading-3 font-medium rounded text-white bg-gradient-to-r from-[#0A5A3B] to-[#084830] hover:from-[#084830] hover:to-[#063624] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#0A5A3B] transition-all duration-200 shadow-sm hover:shadow-md"
+                          title="Copy booking data"
+                        >
+                          <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                          </svg>
+                        </button>
+                        <button
+                          onClick={() => deleteBooking(booking.id)}
+                          className="inline-flex items-center px-2 py-1 border border-transparent text-[10px] leading-3 font-medium rounded text-white bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-all duration-200 shadow-sm hover:shadow-md"
+                          title="Delete booking"
+                        >
+                          <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+                
+                {filteredBookings.length > 4 && (
+                  <div className="p-3 text-center">
+                    <button
+                      onClick={() => {
+                        const button = document.getElementById('show-more-btn');
+                        if (button) {
+                          const expandedCards = document.querySelectorAll('.expanded-booking-card');
+                          expandedCards.forEach(card => {
+                            (card as HTMLElement).style.display = (card as HTMLElement).style.display === 'none' ? 'block' : 'none';
+                          });
+                          button.textContent = button.textContent?.includes('Show All') ? 'Show Less' : `Show All (${filteredBookings.length})`;
+                        }
+                      }}
+                      id="show-more-btn"
+                      className="text-sm font-medium text-[#0A5A3B] hover:text-[#084830] underline"
+                    >
+                      Show All ({filteredBookings.length})
+                    </button>
+                  </div>
+                )}
+                
+                {filteredBookings.length > 4 && (
+                  <>
+                    {filteredBookings.slice(4).map((booking, index) => (
+                      <div key={booking.id || `booking-${index + 4}`} className="expanded-booking-card border-b border-gray-100 last:border-b-0 p-3 hover:bg-gray-50 transition-colors duration-150" style={{display: 'none'}}>
+                        <div className="flex justify-between items-start">
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center justify-between">
+                              <div className="font-mono bg-gray-100 px-2 py-1 rounded text-xs mb-1">
+                                {booking.id?.substring(0, 6) || `BK${index + 4}`}
+                              </div>
+                              <span
+                                onClick={() => cycleBookingStatus(booking.id, booking.status)}
+                                className={`cursor-pointer text-[9px] font-semibold rounded-full px-2 py-1 border whitespace-nowrap transition-all duration-200 hover:scale-105 ${
+                                  (booking.status || '').toLowerCase() === 'pending'
+                                    ? 'bg-yellow-50 text-yellow-800 border-yellow-300 hover:bg-yellow-100'
+                                    : (booking.status || '').toLowerCase() === 'confirmed'
+                                      ? 'bg-blue-50 text-blue-800 border-blue-300 hover:bg-blue-100'
+                                      : (booking.status || '').toLowerCase() === 'completed'
+                                        ? 'bg-green-50 text-green-800 border-green-300 hover:bg-green-100'
+                                        : (booking.status || '').toLowerCase() === 'cancelled'
+                                          ? 'bg-red-50 text-red-800 border-red-300 hover:bg-red-100'
+                                          : 'bg-gray-50 text-gray-800 border-gray-300 hover:bg-gray-100'
+                                }`}
+                              >
+                                {booking.status || 'Pending'}
+                              </span>
+                            </div>
+                            
+                            <div className="text-sm font-medium text-gray-900 truncate mb-1">
+                              {booking.name || 'N/A'}
+                            </div>
+                            
+                            <div className="text-xs text-gray-500 mb-1 flex items-center">
+                              <svg className="w-3 h-3 text-gray-400 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                              </svg>
+                              {booking.phone || 'N/A'}
+                            </div>
+                            
+                            <div className="text-xs text-gray-500 mb-1 flex items-center">
+                              <svg className="w-3 h-3 text-gray-400 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                              </svg>
+                              {booking.email || 'N/A'}
+                            </div>
+                            
+                            <div className="text-xs text-gray-500 mb-1 flex items-center">
+                              <svg className="w-3 h-3 text-gray-400 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                              </svg>
+                              <div className="truncate">{booking.address || 'N/A'}</div>
+                            </div>
+                            
+                            <div className="text-xs text-gray-500 mb-1 flex items-center">
+                              <svg className="w-3 h-3 text-gray-400 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                              </svg>
+                              <div>{formatDate(booking.date)} {formatTime(booking.time)}</div>
+                            </div>
+                            
+                            <div className="text-xs text-gray-500 mb-1">
+                              <strong>Service:</strong> {booking.service || 'N/A'}
+                            </div>
+                            
+                            <div className="text-xs text-gray-500 mb-2">
+                              <strong>Notes:</strong> {booking.notes || 'N/A'}
+                            </div>
+                          </div>
+                          
+                          <div className="flex flex-col gap-1 ml-2">
+                            <button
+                              onClick={() => copyBookingData(booking)}
+                              className="inline-flex items-center px-2 py-1 border border-transparent text-[10px] leading-3 font-medium rounded text-white bg-gradient-to-r from-[#0A5A3B] to-[#084830] hover:from-[#084830] hover:to-[#063624] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#0A5A3B] transition-all duration-200 shadow-sm hover:shadow-md"
+                              title="Copy booking data"
+                            >
+                              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                              </svg>
+                            </button>
+                            <button
+                              onClick={() => deleteBooking(booking.id)}
+                              className="inline-flex items-center px-2 py-1 border border-transparent text-[10px] leading-3 font-medium rounded text-white bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-all duration-200 shadow-sm hover:shadow-md"
+                              title="Delete booking"
+                            >
+                              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                              </svg>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </>
+                )}
+              </>
+            ) : (
+              <div className="p-8 text-center text-sm text-gray-500">
+                <div className="flex flex-col items-center">
+                  <svg className="w-12 h-12 text-gray-300 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2-2v6a2 2 0 002 2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                  <p className="font-medium">No bookings found</p>
+                  <p className="text-gray-400">Try adjusting your filters</p>
+                </div>
+              </div>
+            )}
+          </div>
+          
+          {/* Desktop Table View - Hidden on small screens */}
+          <div className="hidden md:block overflow-x-auto">
             <div className="min-w-full inline-block align-middle">
               <div className="overflow-hidden">
                 <table className="min-w-full divide-y divide-gray-200">
                   <thead className="bg-gradient-to-r from-[#0A5A3B] to-[#084830]">
                     <tr>
-                      <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
+                      <th scope="col" className="px-2 py-2 text-left text-xs font-medium text-white uppercase tracking-wider min-w-[60px]">
                         ID
                       </th>
-                      <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
+                      <th scope="col" className="px-2 py-2 text-left text-xs font-medium text-white uppercase tracking-wider min-w-[80px]">
                         Customer
                       </th>
-                      <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-white uppercase tracking-wider hidden sm:table-cell">
+                      <th scope="col" className="px-2 py-2 text-left text-xs font-medium text-white uppercase tracking-wider min-w-[70px] hidden sm:table-cell">
                         Contact
                       </th>
-                      <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-white uppercase tracking-wider hidden md:table-cell">
+                      <th scope="col" className="px-2 py-2 text-left text-xs font-medium text-white uppercase tracking-wider min-w-[80px] hidden md:table-cell">
                         Address
                       </th>
-                      <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-white uppercase tracking-wider hidden lg:table-cell">
+                      <th scope="col" className="px-2 py-2 text-left text-xs font-medium text-white uppercase tracking-wider min-w-[100px] hidden lg:table-cell">
                         Service
                       </th>
-                      <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
+                      <th scope="col" className="px-2 py-2 text-left text-xs font-medium text-white uppercase tracking-wider min-w-[80px]">
                         Date & Time
                       </th>
-                      <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
+                      <th scope="col" className="px-2 py-2 text-left text-xs font-medium text-white uppercase tracking-wider min-w-[70px]">
                         Status
                       </th>
-                      <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-white uppercase tracking-wider hidden md:table-cell">
+                      <th scope="col" className="px-2 py-2 text-left text-xs font-medium text-white uppercase tracking-wider min-w-[70px] hidden md:table-cell">
                         Notes
                       </th>
-                      <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
+                      <th scope="col" className="px-2 py-2 text-left text-xs font-medium text-white uppercase tracking-wider min-w-[80px]">
                         Actions
                       </th>
                     </tr>
@@ -554,52 +782,54 @@ const AdminDashboard = () => {
                     {filteredBookings.length > 0 ? (
                       filteredBookings.map((booking, index) => (
                         <tr key={booking.id || `booking-${index}`} className="hover:bg-gray-50 transition-colors duration-150">
-                          <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
-                            <div className="font-mono bg-gray-100 px-2 py-1 rounded text-xs">{booking.id?.substring(0, 8) || `BK${index}`}</div>
+                          <td className="px-2 py-2 whitespace-nowrap text-xs text-gray-500">
+                            <div className="font-mono bg-gray-100 px-1 py-0.5 rounded text-[10px]">{booking.id?.substring(0, 4) || `B${index}`}</div>
                           </td>
-                          <td className="px-4 py-4">
-                            <div className="text-sm font-medium text-gray-900 truncate max-w-[120px] sm:max-w-[160px]">{booking.name || 'N/A'}</div>
-                            <div className="text-xs text-gray-500 truncate max-w-[120px] sm:max-w-[160px] md:hidden">{booking.email || 'N/A'}</div>
+                          <td className="px-2 py-2">
+                            <div className="text-xs font-medium text-gray-900 truncate max-w-[60px] xs:max-w-[70px] sm:max-w-[90px]">{booking.name || 'N/A'}</div>
+                            <div className="text-[9px] text-gray-500 truncate max-w-[60px] xs:max-w-[70px] sm:max-w-[90px] md:hidden">{booking.email || 'N/A'}</div>
                           </td>
-                          <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500 hidden sm:table-cell">
+                          <td className="px-2 py-2 whitespace-nowrap text-xs text-gray-500 hidden sm:table-cell">
                             <div className="flex items-center">
-                              <svg className="w-4 h-4 text-gray-400 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <svg className="w-3 h-3 text-gray-400 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                               </svg>
                               {booking.phone || 'N/A'}
                             </div>
-                            <div className="text-xs text-gray-500 sm:hidden">{booking.email || 'N/A'}</div>
+                            <div className="text-[9px] text-gray-500 sm:hidden">{booking.email || 'N/A'}</div>
                           </td>
-                          <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500 hidden md:table-cell">
+                          <td className="px-2 py-2 whitespace-nowrap text-xs text-gray-500 hidden md:table-cell">
                             <div className="flex items-center">
-                              <svg className="w-4 h-4 text-gray-400 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <svg className="w-3 h-3 text-gray-400 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                               </svg>
-                              <div className="truncate max-w-[140px] md:max-w-[180px]">{booking.address || 'N/A'}</div>
+                              <div className="truncate max-w-[60px] xs:max-w-[70px] md:max-w-[80px]">{booking.address || 'N/A'}</div>
                             </div>
                           </td>
-                          <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-900 hidden lg:table-cell">
-                            <div className="truncate max-w-[120px] lg:max-w-[160px]">{booking.service || 'N/A'}</div>
+                          <td className="px-2 py-2 whitespace-nowrap text-xs text-gray-900 hidden lg:table-cell">
+                            <div className="truncate max-w-[60px] xs:max-w-[70px] lg:max-w-[80px]">{booking.service || 'N/A'}</div>
                           </td>
-                          <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
-                            <div className="flex items-center">
-                              <svg className="w-4 h-4 text-gray-400 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                              </svg>
-                              <div className="truncate max-w-[100px]">{formatDate(booking.date)}</div>
-                            </div>
-                            <div className="flex items-center text-xs mt-1">
-                              <svg className="w-3 h-3 text-gray-400 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                              </svg>
-                              {formatTime(booking.time)}
+                          <td className="px-2 py-2 whitespace-nowrap text-xs text-gray-500">
+                            <div className="flex flex-col">
+                              <div className="flex items-center">
+                                <svg className="w-3 h-3 text-gray-400 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                </svg>
+                                <div className="truncate max-w-[50px] xs:max-w-[60px]">{formatDate(booking.date)}</div>
+                              </div>
+                              <div className="flex items-center text-[9px] mt-0.5">
+                                <svg className="w-2.5 h-2.5 text-gray-400 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                {formatTime(booking.time)}
+                              </div>
                             </div>
                           </td>
-                          <td className="px-4 py-4 whitespace-nowrap">
+                          <td className="px-2 py-2 whitespace-nowrap">
                             <span
                               onClick={() => cycleBookingStatus(booking.id, booking.status)}
-                              className={`cursor-pointer text-xs font-semibold rounded-full px-3 py-1.5 border whitespace-nowrap transition-all duration-200 hover:scale-105 ${
+                              className={`cursor-pointer text-[8px] font-semibold rounded-full px-1 py-0.5 border whitespace-nowrap transition-all duration-200 hover:scale-105 ${
                                 (booking.status || '').toLowerCase() === 'pending'
                                   ? 'bg-yellow-50 text-yellow-800 border-yellow-300 hover:bg-yellow-100'
                                   : (booking.status || '').toLowerCase() === 'confirmed'
@@ -611,34 +841,34 @@ const AdminDashboard = () => {
                                         : 'bg-gray-50 text-gray-800 border-gray-300 hover:bg-gray-100'
                               }`}
                             >
-                              {booking.status || 'Pending'}
+                              {booking.status || 'P'}
                             </span>
                           </td>
-                          <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500 hidden md:table-cell">
+                          <td className="px-2 py-2 whitespace-nowrap text-xs text-gray-500 hidden md:table-cell">
                             <div className="flex items-start">
-                              <svg className="w-4 h-4 text-gray-400 mr-1 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <svg className="w-3 h-3 text-gray-400 mr-1 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
                               </svg>
-                              <div className="truncate max-w-[120px] md:max-w-[160px]">{booking.notes || 'N/A'}</div>
+                              <div className="truncate max-w-[50px] xs:max-w-[60px] md:max-w-[70px]">{booking.notes || 'N/A'}</div>
                             </div>
                           </td>
-                          <td className="px-4 py-4 whitespace-nowrap text-sm font-medium">
+                          <td className="px-2 py-2 whitespace-nowrap text-xs font-medium">
                             <div className="flex gap-1">
                               <button
                                 onClick={() => copyBookingData(booking)}
-                                className="inline-flex items-center px-2 py-1.5 border border-transparent text-xs leading-4 font-medium rounded-lg text-white bg-gradient-to-r from-[#0A5A3B] to-[#084830] hover:from-[#084830] hover:to-[#063624] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#0A5A3B] transition-all duration-200 shadow-sm hover:shadow-md"
+                                className="inline-flex items-center px-1 py-0.5 border border-transparent text-[9px] leading-3 font-medium rounded text-white bg-gradient-to-r from-[#0A5A3B] to-[#084830] hover:from-[#084830] hover:to-[#063624] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#0A5A3B] transition-all duration-200 shadow-sm hover:shadow-md"
                                 title="Copy booking data"
                               >
-                                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
                                 </svg>
                               </button>
                               <button
                                 onClick={() => deleteBooking(booking.id)}
-                                className="inline-flex items-center px-2 py-1.5 border border-transparent text-xs leading-4 font-medium rounded-lg text-white bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-all duration-200 shadow-sm hover:shadow-md"
+                                className="inline-flex items-center px-1 py-0.5 border border-transparent text-[9px] leading-3 font-medium rounded text-white bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-all duration-200 shadow-sm hover:shadow-md"
                                 title="Delete booking"
                               >
-                                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                 </svg>
                               </button>
@@ -742,7 +972,7 @@ const AdminDashboard = () => {
           <div className="absolute -top-4 right-0 w-16 h-1 bg-gradient-to-r from-blue-400 to-cyan-300 rounded-full"></div>
           
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 mb-6 sm:mb-8">
-          {/* Service Distribution Line Chart */}
+          {/* Service Distribution Bar Chart */}
           <div className="bg-white rounded-xl shadow-lg p-5 sm:p-6 border border-gray-100">
             <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
               <div className="p-2 rounded-lg bg-blue-50 mr-3">
@@ -750,23 +980,28 @@ const AdminDashboard = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 8v8m-4-5v5m-4-2v2m-2 4h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
               </div>
-              <span className="text-gray-900 font-semibold">Service Distribution (Line Chart)</span>
+              <span className="text-gray-900 font-semibold">Service Distribution</span>
             </h3>
             {serviceData.length > 0 ? (
-              <div className="h-64 sm:h-80">
+              <div className="h-72 sm:h-80">
                 <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={serviceData}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
+                  <BarChart data={serviceData} layout="vertical" margin={{ top: 20, right: 50, left: 30, bottom: 20 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" horizontal={false} />
                     <XAxis 
-                      dataKey="name" 
-                      fontSize={12} 
+                      type="number" 
+                      stroke="#666" 
+                      fontSize={12}
                       tick={{ fill: '#4B5563' }}
-                      interval={0}
                     />
                     <YAxis 
+                      type="category" 
+                      dataKey="name" 
                       stroke="#666" 
-                      width={40}
-                      tick={{ fontSize: 11 }}
+                      fontSize={0}
+                      tick={{ fill: 'transparent', fontSize: 0 }}
+                      width={30}
+                      hide={true}
+                      interval={0}
                     />
                     <Tooltip 
                       contentStyle={{ 
@@ -776,19 +1011,26 @@ const AdminDashboard = () => {
                         fontSize: '12px',
                         boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
                       }}
-                      itemStyle={{ color: '#2582A1' }}
+                      formatter={(value, name) => [`${value} bookings`, name]}
+                      cursor={{ fill: 'transparent' }}
                     />
-                    <Legend />
-                    <Line 
-                      type="monotone" 
+                    <Bar 
                       dataKey="value" 
                       name="Bookings" 
-                      stroke="#2582A1" 
-                      strokeWidth={3} 
-                      activeDot={{ r: 8, fill: '#1E6B82' }} 
-                      dot={{ fill: '#2582A1', strokeWidth: 2, r: 4 }}
-                    />
-                  </LineChart>
+                      radius={[0, 4, 4, 0]}
+                    >
+                      {serviceData.map((entry, index) => (
+                        <Cell 
+                          key={`cell-${index}`} 
+                          fill={[
+                            '#0A5A3B', '#4F46E5', '#10B981', '#EF4444', '#F59E0B',
+                            '#8B5CF6', '#EC4899', '#06B6D4', '#F97316', '#64748B',
+                            '#0EA5E9', '#84CC16', '#F43F5E', '#A855F7', '#14B8A6'
+                          ][index % 15]} 
+                        />
+                      ))}
+                    </Bar>
+                  </BarChart>
                 </ResponsiveContainer>
               </div>
             ) : (
@@ -801,38 +1043,38 @@ const AdminDashboard = () => {
             )}
           </div>
                   
-          {/* Service Distribution Pie Chart */}
+          {/* Service Distribution Doughnut Chart */}
           <div className="bg-white rounded-xl shadow-lg p-5 sm:p-6 border border-gray-100">
             <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
               <div className="p-2 rounded-lg bg-blue-50 mr-3">
                 <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.488 9H15V3.512A9.029 9.029 0 0120.488 9z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.488 9H15V3.512A9.029 9.001 0 0120.488 9z" />
                 </svg>
               </div>
-              <span className="text-gray-900 font-semibold">Service Distribution (Pie Chart)</span>
+              <span className="text-gray-900 font-semibold">Service Distribution (Doughnut)</span>
             </h3>
             {serviceData.length > 0 ? (
-              <div className="h-64 sm:h-80">
+              <div className="h-72 sm:h-80">
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
                     <Pie
                       data={serviceData}
                       cx="50%"
                       cy="50%"
-                      labelLine={true}
-                      outerRadius={60}
-                      fill="#8884d8"
+                      innerRadius={80}
+                      outerRadius={110}
+                      paddingAngle={2}
                       dataKey="value"
-                      label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                      label={false}
                     >
                       {serviceData.map((entry, index) => (
                         <Cell 
                           key={`cell-${index}`} 
                           fill={[
-                            '#2582A1', '#92C1D0', '#1E6B82', '#3A9BC1', '#5CB1D6', 
-                            '#7EC7EB', '#A0DCF0', '#155A70', '#0D4454', '#318CA5',
-                            '#4A9EB8', '#63B2CB', '#7CC6DE', '#297A99', '#3D8FAA'
+                            '#0A5A3B', '#4F46E5', '#10B981', '#EF4444', '#F59E0B',
+                            '#8B5CF6', '#EC4899', '#06B6D4', '#F97316', '#64748B',
+                            '#0EA5E9', '#84CC16', '#F43F5E', '#A855F7', '#14B8A6'
                           ][index % 15]} 
                         />
                       ))}
@@ -845,9 +1087,9 @@ const AdminDashboard = () => {
                         fontSize: '12px',
                         boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
                       }}
-                      itemStyle={{ color: '#2582A1' }}
+                      formatter={(value, name, props) => [`${value} bookings`, name]}
+                      cursor={{ fill: 'transparent' }}
                     />
-                    <Legend />
                   </PieChart>
                 </ResponsiveContainer>
               </div>
@@ -891,8 +1133,9 @@ const AdminDashboard = () => {
                   <Tooltip 
                     contentStyle={{ backgroundColor: '#fff', border: '1px solid #0A5A3B', borderRadius: '8px', fontSize: '12px' }}
                     itemStyle={{ color: '#2582A1' }}
+                    formatter={(value) => [`${value} bookings`, 'Bookings']}
                   />
-                  <Bar dataKey="value" fill="#1E6B82" radius={[6, 6, 0, 0]}>
+                  <Bar dataKey="value" radius={[6, 6, 0, 0]}>
                     {[
                       { name: 'Pending', value: stats.pending, color: '#F59E0B' },
                       { name: 'Confirmed', value: stats.confirmed, color: '#2582A1' },
@@ -912,23 +1155,27 @@ const AdminDashboard = () => {
             <h3 className="text-base sm:text-lg font-medium text-gray-900 mb-3 sm:mb-4">Monthly Trend</h3>
             <div className="h-56 sm:h-64">
               <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={dailyData.slice(-30)} margin={{ top: 25, right: 35, left: 25, bottom: 25 }}>
+                <LineChart data={dailyData.slice(-30)} margin={{ top: 25, right: 35, left: 25, bottom: 40 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
                   <XAxis 
                     dataKey="date" 
-                    fontSize={10} 
+                    fontSize={9} 
                     stroke="#666"
-                    tick={{ fontSize: 9, fill: '#4B5563' }}
-                    interval={0}
+                    tick={{ fontSize: 8, fill: '#4B5563' }}
+                    interval={Math.max(0, Math.floor(Math.min(30, dailyData.length) / 8))}
+                    angle={-45}
+                    textAnchor="end"
+                    height={40}
                   />
                   <YAxis 
                     stroke="#666" 
                     width={40}
-                    tick={{ fontSize: 10, fill: '#4B5563' }}
+                    tick={{ fontSize: 9, fill: '#4B5563' }}
                   />
                   <Tooltip 
                     contentStyle={{ backgroundColor: '#fff', border: '1px solid #0A5A3B', borderRadius: '8px', fontSize: '12px' }}
                     itemStyle={{ color: '#2582A1' }}
+                    formatter={(value) => [`${value} bookings`, 'Bookings']}
                   />
                   <Legend />
                   <Line 
@@ -976,23 +1223,27 @@ const AdminDashboard = () => {
           <h3 className="text-base sm:text-lg font-medium text-gray-900 mb-3 sm:mb-4">Performance Overview</h3>
           <div className="h-64 sm:h-80">
             <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={dailyData.slice(-60)} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
+              <AreaChart data={dailyData.slice(-60)} margin={{ top: 20, right: 30, left: 20, bottom: 40 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
                 <XAxis 
                   dataKey="date" 
-                  fontSize={10} 
+                  fontSize={9} 
                   stroke="#666"
-                  tick={{ fontSize: 9, fill: '#4B5563' }}
-                  interval={0}
+                  tick={{ fontSize: 8, fill: '#4B5563' }}
+                  interval={Math.max(0, Math.floor(Math.min(60, dailyData.length) / 10))}
+                  angle={-45}
+                  textAnchor="end"
+                  height={40}
                 />
                 <YAxis 
                   stroke="#666" 
                   width={40}
-                  tick={{ fontSize: 10, fill: '#4B5563' }}
+                  tick={{ fontSize: 9, fill: '#4B5563' }}
                 />
                 <Tooltip 
                   contentStyle={{ backgroundColor: '#fff', border: '1px solid #0A5A3B', borderRadius: '8px', fontSize: '12px' }}
                   itemStyle={{ color: '#2582A1' }}
+                  formatter={(value) => [`${value} bookings`, 'Bookings']}
                 />
                 <Legend />
                 <Area 
@@ -1015,14 +1266,17 @@ const AdminDashboard = () => {
           {dailyData.length > 0 ? (
             <div className="h-72 sm:h-80">
               <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={dailyData} margin={{ top: 25, right: 35, left: 25, bottom: 25 }}>
+                <LineChart data={dailyData} margin={{ top: 25, right: 35, left: 25, bottom: 50 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
                   <XAxis 
                     dataKey="date" 
-                    fontSize={11} 
+                    fontSize={10} 
                     stroke="#666"
-                    tick={{ fontSize: 10, fill: '#4B5563' }}
-                    interval={0}
+                    tick={{ fontSize: 9, fill: '#4B5563' }}
+                    interval={Math.max(0, Math.floor(dailyData.length / 10))}
+                    angle={-45}
+                    textAnchor="end"
+                    height={50}
                   />
                   <YAxis 
                     stroke="#666" 
@@ -1032,6 +1286,7 @@ const AdminDashboard = () => {
                   <Tooltip 
                     contentStyle={{ backgroundColor: '#fff', border: '1px solid #0A5A3B', borderRadius: '8px', fontSize: '12px' }}
                     itemStyle={{ color: '#2582A1' }}
+                    formatter={(value) => [`${value} bookings`, 'Bookings']}
                   />
                   <Legend />
                   <Line 
@@ -1059,13 +1314,13 @@ const AdminDashboard = () => {
             <div className="h-56 sm:h-64">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={[
-                  { day: 'Monday', bookings: getBookingsForDay('Monday', bookings) },
-                  { day: 'Tuesday', bookings: getBookingsForDay('Tuesday', bookings) },
-                  { day: 'Wednesday', bookings: getBookingsForDay('Wednesday', bookings) },
-                  { day: 'Thursday', bookings: getBookingsForDay('Thursday', bookings) },
-                  { day: 'Friday', bookings: getBookingsForDay('Friday', bookings) },
-                  { day: 'Saturday', bookings: getBookingsForDay('Saturday', bookings) },
-                  { day: 'Sunday', bookings: getBookingsForDay('Sunday', bookings) }
+                  { day: 'Mon', bookings: getBookingsForDay('Monday', bookings) },
+                  { day: 'Tue', bookings: getBookingsForDay('Tuesday', bookings) },
+                  { day: 'Wed', bookings: getBookingsForDay('Wednesday', bookings) },
+                  { day: 'Thu', bookings: getBookingsForDay('Thursday', bookings) },
+                  { day: 'Fri', bookings: getBookingsForDay('Friday', bookings) },
+                  { day: 'Sat', bookings: getBookingsForDay('Saturday', bookings) },
+                  { day: 'Sun', bookings: getBookingsForDay('Sunday', bookings) }
                 ]}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
                   <XAxis 
@@ -1082,6 +1337,7 @@ const AdminDashboard = () => {
                   <Tooltip 
                     contentStyle={{ backgroundColor: '#fff', border: '1px solid #0A5A3B', borderRadius: '8px', fontSize: '12px' }}
                     itemStyle={{ color: '#2582A1' }}
+                    formatter={(value) => [`${value} bookings`, 'Bookings']}
                   />
                   <Bar dataKey="bookings" fill="#F97316" radius={[4, 4, 0, 0]} />
                 </BarChart>
@@ -1103,28 +1359,28 @@ const AdminDashboard = () => {
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart
                   data={[
-                    { time: 'Morning (9AM-12PM)', bookings: bookings.filter(b => {
+                    { time: '9AM-12PM', bookings: bookings.filter(b => {
                       const hour = b.time ? parseInt(b.time.split(':')[0]) : 0;
                       return hour >= 9 && hour < 12;
-                    }).length, color: '#2582A1' },
-                    { time: 'Afternoon (12PM-4PM)', bookings: bookings.filter(b => {
+                    }).length },
+                    { time: '12PM-4PM', bookings: bookings.filter(b => {
                       const hour = b.time ? parseInt(b.time.split(':')[0]) : 0;
                       return hour >= 12 && hour < 16;
-                    }).length, color: '#3A9BC1' },
-                    { time: 'Evening (4PM-7PM)', bookings: bookings.filter(b => {
+                    }).length },
+                    { time: '4PM-7PM', bookings: bookings.filter(b => {
                       const hour = b.time ? parseInt(b.time.split(':')[0]) : 0;
                       return hour >= 16 && hour < 19;
-                    }).length, color: '#5CB1D6' }
+                    }).length }
                   ]}
                   layout="horizontal"
-                  margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+                  margin={{ top: 20, right: 30, left: 100, bottom: 20 }}
                 >
                   <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
                   <XAxis type="number" stroke="#666" />
                   <YAxis 
                     dataKey="time" 
                     type="category" 
-                    width={140} 
+                    width={90} 
                     stroke="#666" 
                     tick={{ fontSize: 12 }}
                     interval={0}
@@ -1132,21 +1388,23 @@ const AdminDashboard = () => {
                   <Tooltip 
                     contentStyle={{ 
                       backgroundColor: '#fff', 
-                      border: '1px solid #2582A1', 
+                      border: '1px solid #0A5A3B', 
                       borderRadius: '8px', 
                       fontSize: '12px',
                       boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
                     }}
-                    itemStyle={{ color: '#2582A1' }}
-                    formatter={(value) => [`${value} bookings`, 'Bookings']}
+                    formatter={(value, name) => [`${value} bookings`, 'Time Slot']}
+                    cursor={{ fill: 'transparent' }}
                   />
                   <Bar dataKey="bookings" radius={[0, 4, 4, 0]}>
                     {[
-                      { time: 'Morning (9AM-12PM)', bookings: 0, color: '#2582A1' },
-                      { time: 'Afternoon (12PM-4PM)', bookings: 0, color: '#3A9BC1' },
-                      { time: 'Evening (4PM-7PM)', bookings: 0, color: '#5CB1D6' }
+                      { time: 'Morning (9AM-12PM)', bookings: 0, color: '#0A5A3B' },
+                      { time: 'Afternoon (12PM-4PM)', bookings: 0, color: '#34D399' },
+                      { time: 'Evening (4PM-7PM)', bookings: 0, color: '#FBBF24' }
                     ].map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
+                      <Cell key={`cell-${index}`} fill={[
+                        '#0A5A3B', '#34D399', '#FBBF24'
+                      ][index % 3]} />
                     ))}
                   </Bar>
                 </BarChart>
