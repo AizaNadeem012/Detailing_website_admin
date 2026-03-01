@@ -18,7 +18,7 @@ const authClient = new google.auth.GoogleAuth({
 // PUT → update booking status
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const { status } = await request.json();
@@ -42,7 +42,8 @@ export async function PUT(
     const rows = response.data.values || [];
     
     // Extract the row index from the params.id (which is in format booking_row_number)
-    const parts = params.id.split('_');
+    const { id } = await params;
+    const parts = id.split('_');
     let rowIndex = -1;
     
     if (parts.length >= 3 && parts[0] === 'booking' && parts[1] === 'row') {
