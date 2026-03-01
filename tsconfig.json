@@ -28,11 +28,7 @@
         "./src/*"
       ]
     },
-    "types": [
-      "node",
-      "react",
-      "react-dom"
-    ]
+    // Type definitions are automatically resolved from node_modules/@types
   },
   "include": [
     "next-env.d.ts",
