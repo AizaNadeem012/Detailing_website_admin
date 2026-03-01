@@ -137,42 +137,44 @@ const AdminSettingsPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gray-50 py-8 overflow-x-hidden no-overflow">
+      <div className="w-full max-w-6xl px-4 sm:px-6 lg:px-8 mx-auto form-container">
         {/* Header */}
         <div className="mb-8 flex flex-wrap justify-between items-center gap-4">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900">Admin Settings</h1>
+          <div className="min-w-0 flex-1">
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 truncate">Admin Settings</h1>
             <p className="mt-2 text-gray-600">Manage your account credentials</p>
           </div>
-          <div className="flex gap-3">
+          <div className="flex flex-wrap gap-3">
             <a
               href="/admin"
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 flex items-center gap-2"
+              className="px-3 py-2 sm:px-4 sm:py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 flex items-center gap-1 sm:gap-2 text-sm sm:text-base"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
               </svg>
-              Dashboard
+              <span className="hidden xs:inline">Dashboard</span>
+              <span className="xs:hidden">Dash</span>
             </a>
             <button
               onClick={handleLogout}
-              className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200 flex items-center gap-2"
+              className="px-3 py-2 sm:px-4 sm:py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200 flex items-center gap-1 sm:gap-2 text-sm sm:text-base"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
               </svg>
-              Logout
+              <span className="hidden xs:inline">Logout</span>
+              <span className="xs:hidden">Out</span>
             </button>
           </div>
         </div>
 
         {/* Credentials Change Form */}
-        <div className="bg-white rounded-lg shadow p-6 mb-8">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Change Credentials</h2>
+        <div className="bg-white rounded-lg shadow p-4 sm:p-6 mb-8 w-full">
+          <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-6">Change Credentials</h2>
           
-          <form onSubmit={handleChangeCredentials} className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <form onSubmit={handleChangeCredentials} className="space-y-6 w-full">
+            <div className="grid grid-cols-1 gap-6">
               {/* Current Credentials */}
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold text-gray-800 border-b pb-2">Current Credentials</h3>
@@ -186,7 +188,7 @@ const AdminSettingsPage = () => {
                     id="currentUsername"
                     value={currentUsername}
                     onChange={(e) => setCurrentUsername(e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0A5A3B] focus:border-[#0A5A3B] transition"
+                    className="w-full px-3 py-2 sm:px-4 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0A5A3B] focus:border-[#0A5A3B] transition"
                     placeholder="Enter current username"
                   />
                 </div>
@@ -200,7 +202,7 @@ const AdminSettingsPage = () => {
                     id="currentPassword"
                     value={currentPassword}
                     onChange={(e) => setCurrentPassword(e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0A5A3B] focus:border-[#0A5A3B] transition"
+                    className="w-full px-3 py-2 sm:px-4 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0A5A3B] focus:border-[#0A5A3B] transition"
                     placeholder="Enter current password"
                   />
                 </div>
@@ -219,7 +221,7 @@ const AdminSettingsPage = () => {
                     id="newUsername"
                     value={newUsername}
                     onChange={(e) => setNewUsername(e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0A5A3B] focus:border-[#0A5A3B] transition"
+                    className="w-full px-3 py-2 sm:px-4 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0A5A3B] focus:border-[#0A5A3B] transition"
                     placeholder="Enter new username"
                   />
                 </div>
@@ -233,7 +235,7 @@ const AdminSettingsPage = () => {
                     id="newPassword"
                     value={newPassword}
                     onChange={(e) => setNewPassword(e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0A5A3B] focus:border-[#0A5A3B] transition"
+                    className="w-full px-3 py-2 sm:px-4 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0A5A3B] focus:border-[#0A5A3B] transition"
                     placeholder="Enter new password"
                   />
                 </div>
@@ -247,7 +249,7 @@ const AdminSettingsPage = () => {
                     id="confirmNewPassword"
                     value={confirmNewPassword}
                     onChange={(e) => setConfirmNewPassword(e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0A5A3B] focus:border-[#0A5A3B] transition"
+                    className="w-full px-3 py-2 sm:px-4 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0A5A3B] focus:border-[#0A5A3B] transition"
                     placeholder="Confirm new password"
                   />
                 </div>
@@ -289,7 +291,7 @@ const AdminSettingsPage = () => {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="px-6 py-3 border border-transparent rounded-lg shadow-sm text-base font-medium text-white bg-[#0A5A3B] hover:bg-[#084830] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#0A5A3B] transition-colors duration-200 disabled:opacity-50"
+                className="w-full sm:w-auto px-4 py-2 sm:px-6 sm:py-3 border border-transparent rounded-lg shadow-sm text-sm sm:text-base font-medium text-white bg-[#0A5A3B] hover:bg-[#084830] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#0A5A3B] transition-colors duration-200 disabled:opacity-50"
               >
                 {isLoading ? (
                   <span className="flex items-center">
@@ -308,32 +310,32 @@ const AdminSettingsPage = () => {
         </div>
         
         {/* Security Tips */}
-        <div className="bg-white rounded-lg shadow p-6">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Security Tips</h2>
+        <div className="bg-white rounded-lg shadow p-4 sm:p-6 w-full">
+          <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4">Security Tips</h2>
           <ul className="space-y-2 text-gray-700">
             <li className="flex items-start">
-              <svg className="h-5 w-5 text-green-500 mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="h-5 w-5 text-green-500 mr-2 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
-              Use a strong password with at least 8 characters, including uppercase, lowercase, numbers, and symbols
+              <span className="text-sm sm:text-base">Use a strong password with at least 8 characters, including uppercase, lowercase, numbers, and symbols</span>
             </li>
             <li className="flex items-start">
-              <svg className="h-5 w-5 text-green-500 mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="h-5 w-5 text-green-500 mr-2 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
-              Do not reuse passwords from other accounts
+              <span className="text-sm sm:text-base">Do not reuse passwords from other accounts</span>
             </li>
             <li className="flex items-start">
-              <svg className="h-5 w-5 text-green-500 mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="h-5 w-5 text-green-500 mr-2 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
-              Change your credentials regularly
+              <span className="text-sm sm:text-base">Change your credentials regularly</span>
             </li>
             <li className="flex items-start">
-              <svg className="h-5 w-5 text-green-500 mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="h-5 w-5 text-green-500 mr-2 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
-              Never share your credentials with unauthorized persons
+              <span className="text-sm sm:text-base">Never share your credentials with unauthorized persons</span>
             </li>
           </ul>
         </div>

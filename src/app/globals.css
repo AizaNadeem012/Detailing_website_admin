@@ -1,6 +1,8 @@
+/* stylelint-disable at-rule-no-unknown */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+/* stylelint-enable at-rule-no-unknown */
 
 @layer base {
   :root {
@@ -113,8 +115,24 @@
     @apply border-border;
   }
 
+  html {
+    overflow-x: hidden;
+  }
+
   body {
     @apply bg-background text-foreground font-body antialiased;
+    overflow-x: hidden;
+  }
+
+  /* Prevent any element from causing horizontal overflow */
+  * {
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  /* Specifically target common overflow culprits */
+  input, textarea, select {
+    max-width: 100%;
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -133,5 +151,17 @@
   
   .text-gradient {
     @apply bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent;
+  }
+  
+  /* Utility class to prevent overflow */
+  .no-overflow {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+  
+  /* Ensure all form elements don't cause overflow */
+  .form-container {
+    max-width: 100%;
+    overflow-x: hidden;
   }
 }

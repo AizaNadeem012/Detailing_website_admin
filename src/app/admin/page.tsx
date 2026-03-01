@@ -271,6 +271,22 @@ const AdminDashboard = () => {
     });
   };
 
+  const deleteBooking = (id: string) => {
+    if (confirm('Are you sure you want to delete this booking? This action cannot be undone.')) {
+      // Remove the booking from the local state
+      setBookings((prevBookings: Booking[]) => {
+        const updatedBookings = prevBookings.filter((booking: Booking) => booking.id !== id);
+        
+        // Recalculate stats after deletion
+        calculateStats(updatedBookings);
+        
+        return updatedBookings;
+      });
+      
+      alert('Booking deleted successfully!');
+    }
+  };
+
   // Show login form if not authenticated
   if (!isAuthenticated) {
     if (loading) {
@@ -557,7 +573,7 @@ const AdminDashboard = () => {
                           <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500 hidden md:table-cell">
                             <div className="flex items-center">
                               <svg className="w-4 h-4 text-gray-400 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                               </svg>
                               <div className="truncate max-w-[140px] md:max-w-[180px]">{booking.address || 'N/A'}</div>
@@ -607,15 +623,26 @@ const AdminDashboard = () => {
                             </div>
                           </td>
                           <td className="px-4 py-4 whitespace-nowrap text-sm font-medium">
-                            <button
-                              onClick={() => copyBookingData(booking)}
-                              className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs leading-4 font-medium rounded-lg text-white bg-gradient-to-r from-[#0A5A3B] to-[#084830] hover:from-[#084830] hover:to-[#063624] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#0A5A3B] transition-all duration-200 shadow-sm hover:shadow-md"
-                            >
-                              <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                              </svg>
-                              Copy
-                            </button>
+                            <div className="flex gap-1">
+                              <button
+                                onClick={() => copyBookingData(booking)}
+                                className="inline-flex items-center px-2 py-1.5 border border-transparent text-xs leading-4 font-medium rounded-lg text-white bg-gradient-to-r from-[#0A5A3B] to-[#084830] hover:from-[#084830] hover:to-[#063624] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#0A5A3B] transition-all duration-200 shadow-sm hover:shadow-md"
+                                title="Copy booking data"
+                              >
+                                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                </svg>
+                              </button>
+                              <button
+                                onClick={() => deleteBooking(booking.id)}
+                                className="inline-flex items-center px-2 py-1.5 border border-transparent text-xs leading-4 font-medium rounded-lg text-white bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-all duration-200 shadow-sm hover:shadow-md"
+                                title="Delete booking"
+                              >
+                                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
+                              </button>
+                            </div>
                           </td>
                         </tr>
                       ))
