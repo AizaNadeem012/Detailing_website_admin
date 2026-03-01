@@ -1,0 +1,20 @@
+{
+  "name": "SRV Detailing",
+  "short_name": "SRV Detailing",
+  "description": "Professional mobile car valeting and detailing in Manchester and Stockport",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0d5c38",
+  "lang": "en-GB",
+  "scope": "/",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "any",
+      "type": "image/x-icon"
+    }
+  ],
+  "categories": ["automotive", "services"],
+  "orientation": "portrait-primary"
+}

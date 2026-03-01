@@ -1,0 +1,137 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Primary - Dark Green */
+    --primary: 157 81% 24%;
+    --primary-foreground: 0 0% 100%;
+    
+    /* Secondary - Soft Gray */
+    --secondary: 0 0% 96%;
+    --secondary-foreground: 0 0% 20%;
+    
+    /* Background */
+    --background: 0 0% 100%;
+    --foreground: 0 0% 20%;
+    
+    /* Card */
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 20%;
+    
+    /* Popover */
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 20%;
+    
+    /* Muted */
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 45%;
+    
+    /* Accent - Light Green */
+    --accent: 140 40% 74%;
+    --accent-foreground: 0 0% 20%;
+    
+    /* Destructive / Error - Red */
+    --destructive: 6 78% 57%;
+    --destructive-foreground: 0 0% 100%;
+    
+    /* Success */
+    --success: 157 81% 24%;
+    --success-foreground: 0 0% 100%;
+    
+    /* Pending */
+    --pending: 6 78% 57%;
+    --pending-foreground: 0 0% 100%;
+    
+    /* Border & Input */
+    --border: 0 0% 90%;
+    --input: 0 0% 90%;
+    --ring: 157 81% 24%;
+    
+    --radius: 0.75rem;
+    
+    /* Sidebar */
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 0 0% 20%;
+    --sidebar-primary: 157 81% 24%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 140 40% 74%;
+    --sidebar-accent-foreground: 0 0% 20%;
+    --sidebar-border: 0 0% 90%;
+    --sidebar-ring: 157 81% 24%;
+  }
+
+  .dark {
+    --primary: 157 81% 35%;
+    --primary-foreground: 0 0% 100%;
+    
+    --secondary: 0 0% 15%;
+    --secondary-foreground: 0 0% 90%;
+    
+    --background: 0 0% 11%;
+    --foreground: 0 0% 95%;
+    
+    --card: 0 0% 13%;
+    --card-foreground: 0 0% 95%;
+    
+    --popover: 0 0% 13%;
+    --popover-foreground: 0 0% 95%;
+    
+    --muted: 0 0% 18%;
+    --muted-foreground: 0 0% 65%;
+    
+    --accent: 140 40% 30%;
+    --accent-foreground: 0 0% 95%;
+    
+    --destructive: 6 78% 45%;
+    --destructive-foreground: 0 0% 100%;
+    
+    --success: 157 81% 35%;
+    --success-foreground: 0 0% 100%;
+    
+    --pending: 6 78% 45%;
+    --pending-foreground: 0 0% 100%;
+    
+    --border: 0 0% 20%;
+    --input: 0 0% 20%;
+    --ring: 157 81% 35%;
+    
+    --sidebar-background: 0 0% 11%;
+    --sidebar-foreground: 0 0% 95%;
+    --sidebar-primary: 157 81% 35%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 140 40% 30%;
+    --sidebar-accent-foreground: 0 0% 95%;
+    --sidebar-border: 0 0% 20%;
+    --sidebar-ring: 157 81% 35%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-body antialiased;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-heading font-bold;
+  }
+}
+
+@layer utilities {
+  .gradient-primary {
+    @apply bg-gradient-to-r from-primary to-accent;
+  }
+  
+  .gradient-hover {
+    @apply transition-all duration-300 hover:shadow-lg hover:shadow-primary/20;
+  }
+  
+  .text-gradient {
+    @apply bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent;
+  }
+}

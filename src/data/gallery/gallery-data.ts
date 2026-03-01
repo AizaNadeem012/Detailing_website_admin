@@ -1,0 +1,181 @@
+import type { GalleryPageData, GalleryItem } from '@/data/types';
+
+const detailingItems: GalleryItem[] = [
+  {
+    id: 'detail-1',
+    title: 'BMW 3 Series Paint Correction',
+    description: 'Multi-stage paint correction removing heavy swirl marks and restoring a mirror-like finish.',
+    beforeImage: '/images/gallery/placeholder-before.jpg',
+    afterImage: '/images/gallery/placeholder-after.jpg',
+    service: 'Paint Correction',
+    vehicle: 'BMW 320d',
+    location: 'Manchester',
+  },
+  {
+    id: 'detail-2',
+    title: 'Range Rover Ceramic Coating',
+    description: 'Full exterior detail with 2-stage correction followed by 5-year ceramic coating application.',
+    beforeImage: '/images/gallery/placeholder-before.jpg',
+    afterImage: '/images/gallery/placeholder-after.jpg',
+    service: 'Ceramic Coating',
+    vehicle: 'Range Rover Sport',
+    location: 'Stockport',
+  },
+  {
+    id: 'detail-3',
+    title: 'Audi A4 Swirl Mark Removal',
+    description: 'Single-stage correction to remove wash swirls on black Audi paint, sealed with ceramic spray.',
+    beforeImage: '/images/gallery/placeholder-before.jpg',
+    afterImage: '/images/gallery/placeholder-after.jpg',
+    service: 'Swirl Mark Removal',
+    vehicle: 'Audi A4',
+    location: 'Didsbury',
+  },
+  {
+    id: 'detail-4',
+    title: 'Tesla Model 3 New Car Protection',
+    description: 'New vehicle protection package including paint correction of factory defects and ceramic coating.',
+    beforeImage: '/images/gallery/placeholder-before.jpg',
+    afterImage: '/images/gallery/placeholder-after.jpg',
+    service: 'New Car Protection',
+    vehicle: 'Tesla Model 3',
+    location: 'Manchester',
+  },
+  {
+    id: 'detail-5',
+    title: 'Mercedes C-Class Headlight Restoration',
+    description: 'Oxidised headlights restored to crystal clarity, improving visibility by 70%.',
+    beforeImage: '/images/gallery/placeholder-before.jpg',
+    afterImage: '/images/gallery/placeholder-after.jpg',
+    service: 'Headlight Restoration',
+    vehicle: 'Mercedes C220',
+    location: 'Bramhall',
+  },
+  {
+    id: 'detail-6',
+    title: 'VW Golf R Interior Detailing',
+    description: 'Full interior restoration including leather conditioning, carpet extraction and trim dressing.',
+    beforeImage: '/images/gallery/placeholder-before.jpg',
+    afterImage: '/images/gallery/placeholder-after.jpg',
+    service: 'Interior Detailing',
+    vehicle: 'Volkswagen Golf R',
+    location: 'Stockport',
+  },
+];
+
+const valetingItems: GalleryItem[] = [
+  {
+    id: 'valet-1',
+    title: 'Ford Focus Full Valet',
+    description: 'Complete interior and exterior valet transforming a heavily used family car back to showroom fresh.',
+    beforeImage: '/images/gallery/placeholder-before.jpg',
+    afterImage: '/images/gallery/placeholder-after.jpg',
+    service: 'Full Valet',
+    vehicle: 'Ford Focus',
+    location: 'Manchester',
+  },
+  {
+    id: 'valet-2',
+    title: 'BMW X5 Pet Hair Removal',
+    description: 'Specialist pet hair extraction from all interior surfaces — seats, carpets, boot liner and crevices.',
+    beforeImage: '/images/gallery/placeholder-before.jpg',
+    afterImage: '/images/gallery/placeholder-after.jpg',
+    service: 'Pet Hair Removal',
+    vehicle: 'BMW X5',
+    location: 'Cheadle',
+  },
+  {
+    id: 'valet-3',
+    title: 'Vauxhall Corsa Interior Deep Clean',
+    description: 'Interior-only valet with stain removal, steam cleaning and full sanitisation.',
+    beforeImage: '/images/gallery/placeholder-before.jpg',
+    afterImage: '/images/gallery/placeholder-after.jpg',
+    service: 'Interior Valeting',
+    vehicle: 'Vauxhall Corsa',
+    location: 'Salford',
+  },
+  {
+    id: 'valet-4',
+    title: 'Kia Sportage Exterior Valet',
+    description: 'Snow foam pre-wash, hand wash, clay bar decontamination, and sealant protection.',
+    beforeImage: '/images/gallery/placeholder-before.jpg',
+    afterImage: '/images/gallery/placeholder-after.jpg',
+    service: 'Exterior Valeting',
+    vehicle: 'Kia Sportage',
+    location: 'Trafford',
+  },
+  {
+    id: 'valet-5',
+    title: 'Toyota RAV4 Odour Removal',
+    description: 'Complete odour elimination using ozone treatment and enzymatic cleaning for a smoke-affected vehicle.',
+    beforeImage: '/images/gallery/placeholder-before.jpg',
+    afterImage: '/images/gallery/placeholder-after.jpg',
+    service: 'Odour Removal',
+    vehicle: 'Toyota RAV4',
+    location: 'Stockport',
+  },
+  {
+    id: 'valet-6',
+    title: 'Nissan Qashqai Upholstery Cleaning',
+    description: 'Hot water extraction of fabric seats removing years of embedded dirt and staining.',
+    beforeImage: '/images/gallery/placeholder-before.jpg',
+    afterImage: '/images/gallery/placeholder-after.jpg',
+    service: 'Upholstery Cleaning',
+    vehicle: 'Nissan Qashqai',
+    location: 'Marple',
+  },
+];
+
+export const detailingGalleryData: GalleryPageData = {
+  slug: 'detailing',
+  title: 'Car Detailing Gallery',
+  seo: {
+    title: 'Car Detailing Gallery — Before & After Results | SRV Detailing',
+    description:
+      'Browse our car detailing portfolio. Before and after photos of paint correction, ceramic coating, headlight restoration and interior detailing in Manchester and Stockport.',
+    keywords: ['car detailing results', 'before and after detailing', 'detailing portfolio', 'paint correction results'],
+    canonical: 'https://www.srvdetailing.co.uk/gallery/detailing',
+  },
+  breadcrumbs: [
+    { label: 'Home', href: '/' },
+    { label: 'Gallery', href: '/gallery' },
+    { label: 'Detailing', href: '/gallery/detailing' },
+  ],
+  heroTitle: 'Car Detailing Gallery',
+  heroDescription:
+    'Before and after transformations from our professional car detailing services — paint correction, ceramic coating, and interior restoration.',
+  items: detailingItems,
+  relatedLinks: [
+    { label: 'Car Detailing Manchester', href: '/manchester/car-detailing', description: 'Our Manchester detailing services' },
+    { label: 'Car Detailing Stockport', href: '/stockport/car-detailing', description: 'Our Stockport detailing services' },
+    { label: 'Book Now', href: '/booking', description: 'Book your detail' },
+    { label: 'Detailing Prices', href: '/pricing/car-detailing', description: 'View pricing' },
+  ],
+};
+
+export const valetingGalleryData: GalleryPageData = {
+  slug: 'valeting',
+  title: 'Car Valeting Gallery',
+  seo: {
+    title: 'Car Valeting Gallery — Before & After Results | SRV Detailing',
+    description:
+      'See our car valeting results. Before and after photos of full valets, interior cleans, pet hair removal and odour treatment in Manchester and Stockport.',
+    keywords: ['car valeting results', 'before and after valet', 'valet portfolio'],
+    canonical: 'https://www.srvdetailing.co.uk/gallery/valeting',
+  },
+  breadcrumbs: [
+    { label: 'Home', href: '/' },
+    { label: 'Gallery', href: '/gallery' },
+    { label: 'Valeting', href: '/gallery/valeting' },
+  ],
+  heroTitle: 'Car Valeting Gallery',
+  heroDescription:
+    'Before and after transformations from our professional car valeting services — full valets, interior deep cleans, and specialist treatments.',
+  items: valetingItems,
+  relatedLinks: [
+    { label: 'Car Valeting Manchester', href: '/manchester/car-valeting', description: 'Our Manchester valeting services' },
+    { label: 'Car Valeting Stockport', href: '/stockport/car-valeting', description: 'Our Stockport valeting services' },
+    { label: 'Book Now', href: '/booking', description: 'Book your valet' },
+    { label: 'Valeting Prices', href: '/pricing/car-valeting', description: 'View pricing' },
+  ],
+};
