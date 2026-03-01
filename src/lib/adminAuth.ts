@@ -44,16 +44,20 @@ export async function storeCredentials(username: string, password: string): Prom
     salt
   };
   
-  localStorage.setItem(ADMIN_CREDENTIALS_KEY, JSON.stringify(credentials));
+  if (typeof window !== 'undefined') {
+    localStorage.setItem(ADMIN_CREDENTIALS_KEY, JSON.stringify(credentials));
+  }
 }
 
 /**
  * Get stored admin credentials from localStorage
  */
 export function getStoredCredentials(): AdminCredentials | null {
+  if (typeof window === 'undefined') return null;
+  
   const stored = localStorage.getItem(ADMIN_CREDENTIALS_KEY);
   if (!stored) return null;
-  
+
   try {
     return JSON.parse(stored) as AdminCredentials;
   } catch (error) {
@@ -103,6 +107,7 @@ export async function authenticateAdminWithPasswordOnly(inputPassword: string): 
  * Check if admin is authenticated
  */
 export function isAdminAuthenticated(): boolean {
+  if (typeof window === 'undefined') return false;
   return localStorage.getItem('adminAuthenticated') === 'true';
 }
 
@@ -110,14 +115,18 @@ export function isAdminAuthenticated(): boolean {
  * Set admin authentication status
  */
 export function setAdminAuthentication(authenticated: boolean): void {
-  localStorage.setItem('adminAuthenticated', authenticated ? 'true' : 'false');
+  if (typeof window !== 'undefined') {
+    localStorage.setItem('adminAuthenticated', authenticated ? 'true' : 'false');
+  }
 }
 
 /**
  * Clear admin authentication
  */
 export function clearAdminAuthentication(): void {
-  localStorage.removeItem('adminAuthenticated');
+  if (typeof window !== 'undefined') {
+    localStorage.removeItem('adminAuthenticated');
+  }
 }
 
 /**

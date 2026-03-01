@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { 
   changeAdminCredentials, 
@@ -10,7 +10,16 @@ import {
 
 const AdminSettingsPage = () => {
   const router = useRouter();
-  const [isAuthenticated, setIsAuthenticated] = useState(isAdminAuthenticated());
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [loading, setLoading] = useState(true); // Add loading state
+
+  // Check authentication status on the client side only
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setIsAuthenticated(isAdminAuthenticated());
+      setLoading(false);
+    }
+  }, []);
   const [currentUsername, setCurrentUsername] = useState('');
   const [currentPassword, setCurrentPassword] = useState('');
   const [newUsername, setNewUsername] = useState('');
@@ -101,6 +110,18 @@ const AdminSettingsPage = () => {
       setIsLoading(false);
     }
   };
+
+  // Show loading state while checking authentication
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 py-8 flex items-center justify-center">
+        <div className="animate-pulse text-center">
+          <div className="h-10 bg-gray-200 rounded w-48 mx-auto mb-4"></div>
+          <div className="h-6 bg-gray-200 rounded w-64 mx-auto"></div>
+        </div>
+      </div>
+    );
+  }
 
   // If not authenticated, redirect to login
   if (!isAuthenticated) {
